@@ -1,18 +1,44 @@
 #include<iostream>
 using namespace std;
+#include<assert.h>
+#pragma once
+#define _CRT_SECURE_NO_WARNINGS 1
 
-template<class T>
+
+
+struct DelFile
+{
+	void operator()(FILE* f)
+	{
+		fclose(f);
+		cout << "fclose" << endl;
+	}
+};
+
+
+struct DelDel
+{
+	void operator()(void* p)
+	{
+		assert(p);
+		delete p;
+		cout << "delete" << endl;
+	}
+};
+
+template<class T,class Del>
 class Weak_ptr;
 
-template<class T>
+template<class T,class Del>
 class Shared_Ptr
 {
 	
 public:
-	friend class Weak_ptr<T>;
-	Shared_Ptr(T* ptr = NULL)
+	friend class Weak_ptr<T,Del>;
+	Shared_Ptr(T* ptr,Del d)
 		:_ptr(ptr)
 		,_count(new int(1))
+		, _del(d)
 	{
 	}
 
@@ -34,7 +60,7 @@ public:
 		{
 			if (!--(*_count))
 			{
-				delete _ptr;
+				del(_ptr);
 				delete _count;
 				cout << "delete older" << endl;
 			}
@@ -50,11 +76,11 @@ public:
 		(*_count)--;
 		if ((*_count) == 0)
 		{
-			delete _ptr;
+			_del(_ptr);
 			delete _count;
 			_ptr = NULL;
 			_count = NULL;
-			cout << "delete" << endl;
+			//cout << "delete" << endl;
 		}
 	}
 
@@ -72,16 +98,17 @@ public:
 protected:
 	T* _ptr;
 	int* _count;
+	Del _del;
 };
 
-template<class T>
+template<class T, class Del>
 class Weak_ptr
 {
 public:
 	Weak_ptr()
 		:_ptr(NULL)
 	{}
-	Weak_ptr(Shared_Ptr<T> ptr)
+	Weak_ptr(Shared_Ptr<T,Del> ptr)
 	{
 		_ptr = ptr._ptr;
 	}
@@ -97,18 +124,25 @@ private:
 
 struct Str
 {
-	Weak_ptr<Str> _prev;
-	Weak_ptr<Str> _next;
+	Weak_ptr<Str,DelDel> _prev;
+	Weak_ptr<Str, DelDel> _next;
 	int _a;
 };
+
+void TestFile()
+{
+	DelFile d;
+	Shared_Ptr<FILE, DelFile> a(fopen("w.ss","w"),d);   //注意这里传参的时候，首先要实例化一个对象
+			//我一开始使用的是Shared_Ptr<FILE, DelFile> a(fopen("w.ss","w"),DelFile d)
+			//这种方式显然是错误的，我不能在一个函数里面去实例化一个对象
+}
 
 
 void TestPtr()
 {
-	
-
-	Shared_Ptr<Str> a = new Str;
-	Shared_Ptr<Str> b = new Str;
+	DelDel d;
+	Shared_Ptr<Str, DelDel> a(new Str, d);
+	Shared_Ptr<Str, DelDel> b(new Str, d);
 
 	a->_next = b;
 	b->_prev = a;
@@ -140,6 +174,20 @@ void TestPtr()
 	delete a;
 	delete b;*/
 	
+}
+
+struct Compare
+{
+	bool operator()(int a,int b)
+	{
+		return a > b;
+	}
+};
+
+void test()
+{
+	Compare com;
+	cout << com(1,2);
 }
 
 

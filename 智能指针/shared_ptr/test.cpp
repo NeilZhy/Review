@@ -5,5 +5,7 @@ using namespace std;
 int main()
 {
 	TestPtr();
+	test();
+	TestFile();
 	return 0;
 }
