@@ -1,21 +1,15 @@
 #include<iostream>
 using namespace std;
 
-struct AA
-{
-	int a;
-	int b;
-	~AA()
-	{
-	}
-};
-
-
+template<class T>
+class Weak_ptr;
 
 template<class T>
 class Shared_Ptr
 {
+	
 public:
+	friend class Weak_ptr<T>;
 	Shared_Ptr(T* ptr = NULL)
 		:_ptr(ptr)
 		,_count(new int(1))
@@ -75,19 +69,54 @@ public:
 	}
 
 
-private:
+protected:
 	T* _ptr;
 	int* _count;
 };
 
+template<class T>
+class Weak_ptr
+{
+public:
+	Weak_ptr()
+		:_ptr(NULL)
+	{}
+	Weak_ptr(Shared_Ptr<T> ptr)
+	{
+		_ptr = ptr._ptr;
+	}
+	T* operator->()
+	{
+		return _ptr;
+	}
+
+private:
+	T* _ptr;
+};
+
+
 struct Str
 {
-	Shared_Ptr<Str> _prev;
-	Shared_Ptr<Str> _next;
+	Weak_ptr<Str> _prev;
+	Weak_ptr<Str> _next;
+	int _a;
 };
+
 
 void TestPtr()
 {
+	
+
+	Shared_Ptr<Str> a = new Str;
+	Shared_Ptr<Str> b = new Str;
+
+	a->_next = b;
+	b->_prev = a;
+	a->_next->_a = 0;
+	cout << b->_a;
+
+
+
 	/*Shared_Ptr<int> ptr(new int(1));
 	cout << *ptr << endl;
 	Shared_Ptr<int> ptr2(ptr);
@@ -110,14 +139,8 @@ void TestPtr()
 
 	delete a;
 	delete b;*/
-
-	Shared_Ptr<Str> a = new Str;
-	Shared_Ptr<Str> b = new Str;
-
-	
-	/*a->_next = b;
-	b->_prev = a;*/
-
-
 	
 }
+
+
+
