@@ -1,12 +1,20 @@
 #include<iostream>
 using namespace std;
-
 class A
 {
 public:
-	A()
-		:_a(0)
+	A(int a)
+		:_a(a)
 	{}
+private:
+	void ShowA()
+	{
+		cout << "I am A." << endl;
+	}
+	void ShowAA()
+	{
+		ShowA();
+	}
 public:
 	int _a;
 };
@@ -15,9 +23,15 @@ public:
 class B : public A
 {
 public:
-	B()
+	B(int a)
 		:_b(0)
+		, A(a)
 	{
+	}
+	void ShowB()
+	{
+		cout << "B" << endl;
+		//ShowA();
 	}
 public:
 	int _b;
@@ -25,8 +39,8 @@ public:
 
 int main()
 {
-	A a;
-	B b;
+	A a(0);
+	B b(0);
 	a = b;
 	return 0;
 
