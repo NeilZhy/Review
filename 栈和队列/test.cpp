@@ -3,9 +3,12 @@
 #include"Queue.h"
 #include"StackToQueue.h"
 #include"MinStack.h"
+#include"Queue2Stack.h"
 int main()
 {
 	//TestStack();
 	//TestQueue();
-	TestStack2Queue();
+	//TestStack2Queue();
+	//TestQueue2Stack();
+	TestCheckStack();
 }

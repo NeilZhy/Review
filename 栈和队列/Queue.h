@@ -1,9 +1,10 @@
+#pragma once
 #include<iostream>
 using namespace std;
 
 #include<list>
 
-template<class T,class Que = list<T>>
+template<class T, class Que = list<T>>
 class Queue
 {
 public:
@@ -20,6 +21,10 @@ public:
 	T front()
 	{
 		return _q.front();
+	}
+	bool Empty()
+	{
+		return _q.empty();
 	}
 
 private:
