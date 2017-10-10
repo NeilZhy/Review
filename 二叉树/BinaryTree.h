@@ -109,6 +109,35 @@ public:
 		cout << endl;
 	}
 
+	void EndNoROrder()
+	{
+		stack<Node*> sn;
+		Node* cur = _root;
+		Node* prev = _root;
+		while (cur || !sn.empty())
+		{
+			if (cur)		//让所有的左子树入栈
+			{
+				sn.push(cur);
+				cur = cur->_left;
+			}
+			else		//所有的左子树都入栈了
+			{
+				if (((sn.top())->_right != NULL) && ((sn.top())->_right != prev))
+				{
+					cur = (sn.top())->_right;
+				}
+				else		//所有的左右子树都访问完毕了
+				{
+					cout << (sn.top())->_data<<" ";
+					prev = sn.top();
+					sn.pop();
+				}
+			}
+		}
+		cout << endl;
+	}
+
 	void LevelOrder()
 	{
 		queue<Node*> que;
@@ -360,6 +389,7 @@ void TestTree()
 	tree.InOrder();
 	tree.InNoROrder();
 	tree.EndOrder();
+	tree.EndNoROrder();
 	tree.LevelOrder();
 	/*cout << tree.NodeNum() << endl;
 	cout << tree.LeafNum() << endl;*/
