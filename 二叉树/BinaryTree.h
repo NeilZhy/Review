@@ -1,6 +1,7 @@
 #include<iostream>
 using namespace std;
 #include<queue>
+#include<stack>
 
 //  {}
 
@@ -39,9 +40,66 @@ public:
 		cout << endl;
 	}
 
+	void PrevNoROeder()
+	{
+		stack<Node*> sn;
+		Node* cur = _root;
+		
+		//思路一：直接判断，当cur为NULL的时候，说明左子树已经是空的了，这个时候就让cur指向栈顶的右子树
+		/*while (!sn.empty() || cur != NULL)  
+		{
+			if (cur == NULL)
+			{
+				cur = (sn.top())->_right;
+				sn.pop();
+			}
+			else
+			{
+				cout << cur->_data << " ";
+				sn.push(cur);
+				cur = cur->_left;
+			}
+			
+		}*/
+
+		//思路二:外循环专门判断栈是不是为空的，内循环是当前节点的所有的左子树都入栈
+	    //思路二的想法可能是更加的清晰一点的，有利于后面的其他的两种遍历的实现和理解
+		while (cur || !sn.empty())
+		{
+			while (cur)
+			{
+				cout << cur->_data << " ";
+				sn.push(cur);
+				cur = cur->_left;
+			}
+			cur = (sn.top())->_right;
+			sn.pop();
+		}
+		cout << endl;
+	}
+
 	void InOrder()
 	{
 		_InOrder(_root);
+		cout << endl;
+	}
+
+	void InNoROrder()
+	{
+		stack<Node*> sn;
+		Node* cur = _root;
+		
+		while (cur || !sn.empty())
+		{
+			while (cur)
+			{
+				sn.push(cur);
+				cur = cur->_left;
+			}
+			cout << (sn.top())->_data<<" ";
+			cur = (sn.top())->_right;
+			sn.pop();
+		}
 		cout << endl;
 	}
 
@@ -106,6 +164,11 @@ public:
 	Node* Find(T data)
 	{
 		return _Find(_root,data);
+	}
+
+	bool IsTree()		//判断是不是完全二叉树
+	{
+		return _IsTree(_root);
 	}
 
 private:
@@ -236,8 +299,53 @@ private:
 				return ret;
 			}
 			ret = _Find(root->_right,data);
+			if (ret)
+			{
+				return ret;
+			}
+			return NULL;
 		}
 	}
+
+	bool _IsTree(Node* root)  
+	{
+		Node* cur;
+		queue<Node*> q;
+		if (root)
+		{
+			q.push(root);
+		}
+		while (!q.empty())
+		{
+			cur = q.front();
+			q.pop();
+			if (!cur)
+			{
+				break;
+			}
+			q.push(cur->_left);
+			q.push(cur->_right);
+		}
+		while (!q.empty())
+		{
+			if (q.front())
+			{
+				return false;
+			}
+			q.pop();
+		}
+		return true;
+	}
+
+	/*bool IsTree2(Node* root)
+	{
+		queue<Node*> 
+		bool NULLNode = false;
+		if (root)
+		{
+
+		}
+	}*/
 
 private:
 	Node* _root;
@@ -245,10 +353,12 @@ private:
 
 void TestTree()
 {
-	int arr[] = {1,2,0,3,0,0,4,5,0,6,0,7,0,0,8};
-	BinaryTree<int> tree(arr,0,15);
+	int arr[] = {1,2,3,0,0,4,0,0,5,6};
+	BinaryTree<int> tree(arr,0,10);
 	tree.PrevOrder();
+	tree.PrevNoROeder();
 	tree.InOrder();
+	tree.InNoROrder();
 	tree.EndOrder();
 	tree.LevelOrder();
 	/*cout << tree.NodeNum() << endl;
@@ -256,7 +366,7 @@ void TestTree()
 	cout << tree.LevelNodeNum(4) << endl;
 	cout << tree.High() << endl;
 	cout << tree.Find(5)->_data << endl;
-
+	cout << tree.IsTree() << endl;
 
 
 }
