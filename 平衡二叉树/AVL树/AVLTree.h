@@ -138,25 +138,25 @@ private:
 			return true;
 		}
 
-		int lefthight = 0;
+		int lefthight = hight;
 		if (_IsAVL(root->_left, lefthight) == false)
 		{
 			return false;
 		}
 		
-		int righthight = 0;
+		int righthight = hight;
 		if(_IsAVL(root->_right, righthight) == false)
 		{
 			return false;
 		}
 		
 
-		if (abs(lefthight - lefthight) < 2)
+		if (abs(lefthight - righthight) < 2)
 		{
-			lefthight > lefthight ? (hight = righthight+1) : (hight = righthight + 1);
+			lefthight > righthight ? (hight = lefthight + 1) : (hight = righthight + 1);
 			return true;
 		}
-		
+		return false;
 	}
 
 	void Rxun(Node* parent)
@@ -199,14 +199,14 @@ private:
 		int num = sub->_left->_bf;
 		Rxun(parent->_right);
 		Lxun(parent);
-		/*if (num == 1)
+		if (num == 1)
 		{
 			p->_bf = -1;
 		}
 		else
 		{
 			sub->_bf = 1;
-		}*/
+		}
 		
 	}
 
@@ -249,14 +249,14 @@ private:
 		int num = sub->_right->_bf;
 		Lxun(parent->_left);
 		Rxun(parent);
-		/*if (num == 1)
+		if (num == 1)
 		{
 			p->_bf = -1;
 		}
 		else
 		{
 			sub->_bf = 1;
-		}*/
+		}
 	}
 private:
 	Node* _root;
@@ -292,7 +292,37 @@ void test()
 	tre.Insert(14, 1);
 	tre.Insert(5, 1);
 
-	cout << tree.IsAVL() << endl;
+	cout << tre.IsAVL() << endl;
 
+
+	AVLTree<int, int> tre1;
+	
+	tre1.Insert(7, 1);
+	
+	tre1.Insert(6, 1);
+	tre1.Insert(15, 1);
+	tre1.Insert(5, 1);
+	tre1.Insert(14, 1);
+	tre1.Insert(16, 1);
+	tre1.Insert(4, 1);
+
+
+	cout << tre1.IsAVL() << endl;
+
+	AVLTree<int, int> t;
+	t.Insert(3, 1);
+	t.Insert(1, 1);
+	t.Insert(6, 1);
+	t.Insert(0, 1);
+	t.Insert(2, 1);
+	t.Insert(5, 1);
+	t.Insert(15, 1);
+	t.Insert(7, 1);
+	t.Insert(16, 1);
+	t.Insert(14, 1);
+	t.Insert(-1, 1);
+	t.Insert(4, 1);
+
+	cout << t.IsAVL() << endl;
 
 }
